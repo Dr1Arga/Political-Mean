@@ -1,0 +1,365 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <title>Interview Spectrum Rater</title>
+  <style>
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      background-color: #18191a;
+      color: #e4e6eb;
+      margin: 0;
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .container {
+      width: 100%;
+      max-width: 450px;
+    }
+
+    h2 {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+
+    /* Navigation Tabs */
+    .tabs {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 20px;
+    }
+
+    .tab-btn {
+      flex: 1;
+      padding: 12px;
+      font-size: 16px;
+      font-weight: bold;
+      border: none;
+      border-radius: 8px;
+      background-color: #242526;
+      color: #b0b3b8;
+      cursor: pointer;
+    }
+
+    .tab-btn.active {
+      background-color: #2d88ff;
+      color: white;
+    }
+
+    /* Cards */
+    .card {
+      background-color: #242526;
+      padding: 20px;
+      border-radius: 12px;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+    }
+
+    .hidden {
+      display: none;
+    }
+
+    /* Input & Slider */
+    input[type="text"] {
+      width: 100%;
+      box-sizing: border-box;
+      padding: 12px;
+      margin-bottom: 20px;
+      border-radius: 8px;
+      border: 1px solid #3a3b3c;
+      background-color: #3a3b3c;
+      color: white;
+      font-size: 16px;
+    }
+
+    .score-display {
+      text-align: center;
+      font-size: 36px;
+      font-weight: bold;
+      margin: 10px 0 5px 0;
+      color: #2d88ff;
+    }
+
+    .spectrum-label {
+      text-align: center;
+      font-size: 14px;
+      color: #b0b3b8;
+      margin-bottom: 15px;
+    }
+
+    input[type="range"] {
+      width: 100%;
+      margin: 10px 0;
+      accent-color: #2d88ff;
+      height: 8px;
+    }
+
+    .scale-markers {
+      display: flex;
+      justify-content: space-between;
+      font-size: 12px;
+      color: #b0b3b8;
+      margin-bottom: 25px;
+    }
+
+    .save-btn {
+      width: 100%;
+      padding: 14px;
+      font-size: 16px;
+      font-weight: bold;
+      background-color: #42b72a;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+    }
+
+    .save-btn:active {
+      opacity: 0.85;
+    }
+
+    /* History & Average Section */
+    .average-box {
+      background-color: #3a3b3c;
+      padding: 15px;
+      border-radius: 8px;
+      text-align: center;
+      margin-bottom: 20px;
+    }
+
+    .average-number {
+      font-size: 32px;
+      font-weight: bold;
+      color: #42b72a;
+    }
+
+    .history-list {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    }
+
+    .history-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 12px;
+      border-bottom: 1px solid #3a3b3c;
+    }
+
+    .history-item:last-child {
+      border-bottom: none;
+    }
+
+    .item-info {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .item-title {
+      font-weight: bold;
+      font-size: 15px;
+    }
+
+    .item-time {
+      font-size: 12px;
+      color: #b0b3b8;
+    }
+
+    .item-score {
+      font-size: 20px;
+      font-weight: bold;
+      color: #2d88ff;
+      margin-right: 12px;
+    }
+
+    .delete-btn {
+      background: #e41e3f;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      padding: 6px 10px;
+      cursor: pointer;
+      font-size: 12px;
+    }
+
+    .clear-all-btn {
+      width: 100%;
+      margin-top: 15px;
+      padding: 10px;
+      background-color: transparent;
+      border: 1px solid #e41e3f;
+      color: #e41e3f;
+      border-radius: 8px;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <h2>Interview Rater</h2>
+
+    <!-- Top Tabs -->
+    <div class="tabs">
+      <button id="rateTabBtn" class="tab-btn active" onclick="switchTab('rate')">Rate Answer</button>
+      <button id="historyTabBtn" class="tab-btn" onclick="switchTab('history')">History (<span id="countBadge">0</span>)</button>
+    </div>
+
+    <!-- TAB 1: Rating Screen -->
+    <div id="rateSection" class="card">
+      <input type="text" id="noteInput" placeholder="Name or Question (optional)...">
+
+      <div class="score-display" id="scoreDisplay">5</div>
+      <div class="spectrum-label" id="spectrumLabel">Center (5)</div>
+
+      <input type="range" id="ratingSlider" min="1" max="10" value="5" oninput="updateSlider(this.value)">
+      
+      <div class="scale-markers">
+        <span>1 (Left)</span>
+        <span>5 (Center)</span>
+        <span>10 (Right)</span>
+      </div>
+
+      <button class="save-btn" onclick="saveRating()">Save Rating</button>
+    </div>
+
+    <!-- TAB 2: History & Average Screen -->
+    <div id="historySection" class="card hidden">
+      <div class="average-box">
+        <div>Average Score</div>
+        <div class="average-number" id="averageDisplay">-</div>
+        <div style="font-size: 12px; color: #b0b3b8;" id="totalCountText">0 responses saved</div>
+      </div>
+
+      <ul class="history-list" id="historyList"></ul>
+
+      <button class="clear-all-btn" onclick="clearAllHistory()">Clear All History</button>
+    </div>
+  </div>
+
+  <script>
+    // Load existing history from device storage
+    let ratingsHistory = JSON.parse(localStorage.getItem("interviewRatings")) || [];
+
+    // Update slider number & label text as you drag
+    function updateSlider(val) {
+      document.getElementById("scoreDisplay").innerText = val;
+      const num = parseInt(val);
+      let label = "Center";
+      if (num < 5) label = "Left Side of Spectrum";
+      if (num > 5) label = "Right Side of Spectrum";
+      document.getElementById("spectrumLabel").innerText = `${label} (${num})`;
+    }
+
+    // Save current rating to history
+    function saveRating() {
+      const score = parseInt(document.getElementById("ratingSlider").value);
+      const noteText = document.getElementById("noteInput").value.trim();
+      const label = noteText !== "" ? noteText : `Response #${ratingsHistory.length + 1}`;
+      
+      const now = new Date();
+      const timeString = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+
+      ratingsHistory.unshift({
+        id: Date.now(),
+        title: label,
+        score: score,
+        time: timeString
+      });
+
+      localStorage.setItem("interviewRatings", JSON.stringify(ratingsHistory));
+
+      // Reset inputs back to center (5) for the next question
+      document.getElementById("noteInput").value = "";
+      document.getElementById("ratingSlider").value = 5;
+      updateSlider(5);
+      updateHistoryUI();
+
+      // Quick visual confirmation on the button
+      const btn = document.querySelector(".save-btn");
+      btn.innerText = "Saved! ✓";
+      setTimeout(() => { btn.innerText = "Save Rating"; }, 800);
+    }
+
+    // Calculate average and render the history list
+    function updateHistoryUI() {
+      document.getElementById("countBadge").innerText = ratingsHistory.length;
+      document.getElementById("totalCountText").innerText = `${ratingsHistory.length} responses saved`;
+
+      const listEl = document.getElementById("historyList");
+      listEl.innerHTML = "";
+
+      if (ratingsHistory.length === 0) {
+        document.getElementById("averageDisplay").innerText = "-";
+        listEl.innerHTML = "<li style='text-align:center; color:#b0b3b8; padding:15px;'>No ratings saved yet.</li>";
+        return;
+      }
+
+      // Calculate the average
+      let sum = 0;
+      for (let item of ratingsHistory) {
+        sum += item.score;
+      }
+      const avg = (sum / ratingsHistory.length).toFixed(2);
+      document.getElementById("averageDisplay").innerText = `${avg} / 10`;
+
+      // Build each row in history
+      ratingsHistory.forEach(item => {
+        const li = document.createElement("li");
+        li.className = "history-item";
+        li.innerHTML = `
+          <div class="item-info">
+            <span class="item-title">${item.title}</span>
+            <span class="item-time">${item.time}</span>
+          </div>
+          <div style="display:flex; align-items:center;">
+            <span class="item-score">${item.score}</span>
+            <button class="delete-btn" onclick="deleteItem(${item.id})">X</button>
+          </div>
+        `;
+        listEl.appendChild(li);
+      });
+    }
+
+    // Delete a single entry
+    function deleteItem(id) {
+      ratingsHistory = ratingsHistory.filter(item => item.id !== id);
+      localStorage.setItem("interviewRatings", JSON.stringify(ratingsHistory));
+      updateHistoryUI();
+    }
+
+    // Wipe all saved entries
+    function clearAllHistory() {
+      if (confirm("Are you sure you want to delete all saved ratings?")) {
+        ratingsHistory = [];
+        localStorage.setItem("interviewRatings", JSON.stringify(ratingsHistory));
+        updateHistoryUI();
+      }
+    }
+
+    // Switch between Rate tab and History tab
+    function switchTab(tab) {
+      if (tab === 'rate') {
+        document.getElementById("rateSection").classList.remove("hidden");
+        document.getElementById("historySection").classList.add("hidden");
+        document.getElementById("rateTabBtn").classList.add("active");
+        document.getElementById("historyTabBtn").classList.remove("active");
+      } else {
+        document.getElementById("rateSection").classList.add("hidden");
+        document.getElementById("historySection").classList.remove("hidden");
+        document.getElementById("rateTabBtn").classList.remove("active");
+        document.getElementById("historyTabBtn").classList.add("active");
+        updateHistoryUI();
+      }
+    }
+
+    // Initialize UI on load
+    updateHistoryUI();
+  </script>
+</body>
+</html>
