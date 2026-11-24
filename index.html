@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="apple-mobile-web-app-capable" content="yes">
-  <title>Interview Spectrum Rater</title>
+  <title>Politics</title>
   <style>
     body {
       font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
@@ -76,19 +76,12 @@
       font-size: 16px;
     }
 
-    .score-display {
+    .spectrum-display {
       text-align: center;
-      font-size: 36px;
+      font-size: 32px;
       font-weight: bold;
-      margin: 10px 0 5px 0;
+      margin: 15px 0 20px 0;
       color: #2d88ff;
-    }
-
-    .spectrum-label {
-      text-align: center;
-      font-size: 14px;
-      color: #b0b3b8;
-      margin-bottom: 15px;
     }
 
     input[type="range"] {
@@ -131,10 +124,11 @@
       margin-bottom: 20px;
     }
 
-    .average-number {
-      font-size: 32px;
+    .average-label {
+      font-size: 28px;
       font-weight: bold;
       color: #42b72a;
+      margin: 5px 0;
     }
 
     .history-list {
@@ -171,7 +165,7 @@
     }
 
     .item-score {
-      font-size: 20px;
+      font-size: 15px;
       font-weight: bold;
       color: #2d88ff;
       margin-right: 12px;
@@ -202,7 +196,7 @@
 <body>
 
   <div class="container">
-    <h2>Interview Rater</h2>
+    <h2>Politics</h2>
 
     <!-- Top Tabs -->
     <div class="tabs">
@@ -214,15 +208,14 @@
     <div id="rateSection" class="card">
       <input type="text" id="noteInput" placeholder="Name or Question (optional)...">
 
-      <div class="score-display" id="scoreDisplay">5</div>
-      <div class="spectrum-label" id="spectrumLabel">Center (5)</div>
+      <div class="spectrum-display" id="spectrumDisplay">Center</div>
 
-      <input type="range" id="ratingSlider" min="1" max="10" value="5" oninput="updateSlider(this.value)">
+      <input type="range" id="ratingSlider" min="1" max="7" value="4" oninput="updateSlider(this.value)">
       
       <div class="scale-markers">
-        <span>1 (Left)</span>
-        <span>5 (Center)</span>
-        <span>10 (Right)</span>
+        <span>Far Left</span>
+        <span>Center</span>
+        <span>Far Right</span>
       </div>
 
       <button class="save-btn" onclick="saveRating()">Save Rating</button>
@@ -231,8 +224,8 @@
     <!-- TAB 2: History & Average Screen -->
     <div id="historySection" class="card hidden">
       <div class="average-box">
-        <div>Average Score</div>
-        <div class="average-number" id="averageDisplay">-</div>
+        <div style="font-size: 14px; color: #b0b3b8;">Overall Average</div>
+        <div class="average-label" id="averageDisplay">-</div>
         <div style="font-size: 12px; color: #b0b3b8;" id="totalCountText">0 responses saved</div>
       </div>
 
@@ -243,41 +236,49 @@
   </div>
 
   <script>
-    // Load existing history from device storage
-    let ratingsHistory = JSON.parse(localStorage.getItem("interviewRatings")) || [];
+    // Map numbers 1-7 to the political spectrum labels
+    const spectrumLabels = {
+      1: "Far Left",
+      2: "Left",
+      3: "Lean Left",
+      4: "Center",
+      5: "Lean Right",
+      6: "Right",
+      7: "Far Right"
+    };
 
-    // Update slider number & label text as you drag
+    // Load existing history from device storage (using a fresh storage key for this version)
+    let ratingsHistory = JSON.parse(localStorage.getItem("politicsSpectrumRatings")) || [];
+
+    // Update label text as you drag the slider
     function updateSlider(val) {
-      document.getElementById("scoreDisplay").innerText = val;
-      const num = parseInt(val);
-      let label = "Center";
-      if (num < 5) label = "Left Side of Spectrum";
-      if (num > 5) label = "Right Side of Spectrum";
-      document.getElementById("spectrumLabel").innerText = `${label} (${num})`;
+      document.getElementById("spectrumDisplay").innerText = spectrumLabels[val];
     }
 
     // Save current rating to history
     function saveRating() {
       const score = parseInt(document.getElementById("ratingSlider").value);
+      const labelName = spectrumLabels[score];
       const noteText = document.getElementById("noteInput").value.trim();
-      const label = noteText !== "" ? noteText : `Response #${ratingsHistory.length + 1}`;
+      const title = noteText !== "" ? noteText : `Response #${ratingsHistory.length + 1}`;
       
       const now = new Date();
       const timeString = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
 
       ratingsHistory.unshift({
         id: Date.now(),
-        title: label,
+        title: title,
         score: score,
+        label: labelName,
         time: timeString
       });
 
-      localStorage.setItem("interviewRatings", JSON.stringify(ratingsHistory));
+      localStorage.setItem("politicsSpectrumRatings", JSON.stringify(ratingsHistory));
 
-      // Reset inputs back to center (5) for the next question
+      // Reset inputs back to Center (4) for the next question
       document.getElementById("noteInput").value = "";
-      document.getElementById("ratingSlider").value = 5;
-      updateSlider(5);
+      document.getElementById("ratingSlider").value = 4;
+      updateSlider(4);
       updateHistoryUI();
 
       // Quick visual confirmation on the button
@@ -300,13 +301,16 @@
         return;
       }
 
-      // Calculate the average
+      // Calculate the numeric average and map to the nearest spectrum label
       let sum = 0;
       for (let item of ratingsHistory) {
         sum += item.score;
       }
-      const avg = (sum / ratingsHistory.length).toFixed(2);
-      document.getElementById("averageDisplay").innerText = `${avg} / 10`;
+      const avgNum = sum / ratingsHistory.length;
+      const roundedScore = Math.round(avgNum);
+      const avgLabel = spectrumLabels[roundedScore];
+
+      document.getElementById("averageDisplay").innerText = `${avgLabel} (${avgNum.toFixed(1)} / 7)`;
 
       // Build each row in history
       ratingsHistory.forEach(item => {
@@ -318,7 +322,7 @@
             <span class="item-time">${item.time}</span>
           </div>
           <div style="display:flex; align-items:center;">
-            <span class="item-score">${item.score}</span>
+            <span class="item-score">${item.label}</span>
             <button class="delete-btn" onclick="deleteItem(${item.id})">X</button>
           </div>
         `;
@@ -329,7 +333,7 @@
     // Delete a single entry
     function deleteItem(id) {
       ratingsHistory = ratingsHistory.filter(item => item.id !== id);
-      localStorage.setItem("interviewRatings", JSON.stringify(ratingsHistory));
+      localStorage.setItem("politicsSpectrumRatings", JSON.stringify(ratingsHistory));
       updateHistoryUI();
     }
 
@@ -337,7 +341,7 @@
     function clearAllHistory() {
       if (confirm("Are you sure you want to delete all saved ratings?")) {
         ratingsHistory = [];
-        localStorage.setItem("interviewRatings", JSON.stringify(ratingsHistory));
+        localStorage.setItem("politicsSpectrumRatings", JSON.stringify(ratingsHistory));
         updateHistoryUI();
       }
     }
