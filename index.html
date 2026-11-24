@@ -4,9 +4,8 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="theme-color" content="#2d88ff">
-  <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="mobile-web-app-capable" content="yes">
-  <link rel="manifest" href="./manifest.json">
+  <meta name="apple-mobile-web-app-capable" content="yes">
   <title>Politics</title>
   <style>
     body {
@@ -201,10 +200,45 @@
       if (tab === 'history') updateHistoryUI();
     }
 
-    // Register Service Worker for PWA installability
-    if ('serviceWorker' in navigator) {
-      navigator.serviceWorker.register('./sw.js').catch(() => {});
-    }
+    // Dynamically generate a real 512x512 PNG icon & valid Manifest matching your exact URL
+    (function setupPWA() {
+      const canvas = document.createElement('canvas');
+      canvas.width = 512;
+      canvas.height = 512;
+      const ctx = canvas.getContext('2d');
+      ctx.fillStyle = '#2d88ff';
+      ctx.fillRect(0, 0, 512, 512);
+      ctx.fillStyle = '#ffffff';
+      ctx.font = 'bold 280px sans-serif';
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      ctx.fillText('P', 256, 270);
+
+      canvas.toBlob((blob) => {
+        const iconUrl = URL.createObjectURL(blob);
+        const manifest = {
+          name: "Politics Interview Rater",
+          short_name: "Politics",
+          start_url: window.location.href,
+          scope: window.location.origin + window.location.pathname.replace(/\/[^\/]*$/, '/'),
+          display: "standalone",
+          background_color: "#18191a",
+          theme_color: "#2d88ff",
+          icons: [
+            { src: iconUrl, sizes: "512x512", type: "image/png", purpose: "any" }
+          ]
+        };
+        const manifestBlob = new Blob([JSON.stringify(manifest)], { type: 'application/manifest+json' });
+        const link = document.createElement('link');
+        link.rel = 'manifest';
+        link.href = URL.createObjectURL(manifestBlob);
+        document.head.appendChild(link);
+      }, 'image/png');
+
+      if ('serviceWorker' in navigator) {
+        navigator.serviceWorker.register('./sw.js').catch(() => {});
+      }
+    })();
 
     updateHistoryUI();
   </script>
