@@ -3,8 +3,10 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#2d88ff">
   <meta name="apple-mobile-web-app-capable" content="yes">
-  <link rel="manifest" href="manifest.json">
+  <meta name="mobile-web-app-capable" content="yes">
+  <link rel="manifest" href="./manifest.json">
   <title>Politics</title>
   <style>
     body {
@@ -17,180 +19,64 @@
       flex-direction: column;
       align-items: center;
     }
-
-    .container {
-      width: 100%;
-      max-width: 450px;
-    }
-
-    h2 {
-      text-align: center;
-      margin-bottom: 20px;
-    }
-
-    /* Navigation Tabs */
-    .tabs {
-      display: flex;
-      gap: 10px;
-      margin-bottom: 20px;
-    }
-
+    .container { width: 100%; max-width: 450px; }
+    h2 { text-align: center; margin-bottom: 20px; }
+    .tabs { display: flex; gap: 10px; margin-bottom: 20px; }
     .tab-btn {
-      flex: 1;
-      padding: 12px;
-      font-size: 16px;
-      font-weight: bold;
-      border: none;
-      border-radius: 8px;
-      background-color: #242526;
-      color: #b0b3b8;
-      cursor: pointer;
+      flex: 1; padding: 12px; font-size: 16px; font-weight: bold;
+      border: none; border-radius: 8px; background-color: #242526;
+      color: #b0b3b8; cursor: pointer;
     }
-
-    .tab-btn.active {
-      background-color: #2d88ff;
-      color: white;
-    }
-
-    /* Cards */
+    .tab-btn.active { background-color: #2d88ff; color: white; }
     .card {
-      background-color: #242526;
-      padding: 20px;
-      border-radius: 12px;
+      background-color: #242526; padding: 20px; border-radius: 12px;
       box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
     }
-
-    .hidden {
-      display: none;
-    }
-
-    /* Input & Slider */
+    .hidden { display: none; }
     input[type="text"] {
-      width: 100%;
-      box-sizing: border-box;
-      padding: 12px;
-      margin-bottom: 20px;
-      border-radius: 8px;
-      border: 1px solid #3a3b3c;
-      background-color: #3a3b3c;
-      color: white;
-      font-size: 16px;
+      width: 100%; box-sizing: border-box; padding: 12px; margin-bottom: 20px;
+      border-radius: 8px; border: 1px solid #3a3b3c; background-color: #3a3b3c;
+      color: white; font-size: 16px;
     }
-
     .spectrum-display {
-      text-align: center;
-      font-size: 32px;
-      font-weight: bold;
-      margin: 15px 0 20px 0;
-      color: #2d88ff;
+      text-align: center; font-size: 32px; font-weight: bold;
+      margin: 15px 0 20px 0; color: #2d88ff;
     }
-
     input[type="range"] {
-      width: 100%;
-      margin: 10px 0;
-      accent-color: #2d88ff;
-      height: 8px;
+      width: 100%; margin: 10px 0; accent-color: #2d88ff; height: 8px;
     }
-
     .scale-markers {
-      display: flex;
-      justify-content: space-between;
-      font-size: 12px;
-      color: #b0b3b8;
-      margin-bottom: 25px;
+      display: flex; justify-content: space-between; font-size: 12px;
+      color: #b0b3b8; margin-bottom: 25px;
     }
-
     .save-btn {
-      width: 100%;
-      padding: 14px;
-      font-size: 16px;
-      font-weight: bold;
-      background-color: #42b72a;
-      color: white;
-      border: none;
-      border-radius: 8px;
-      cursor: pointer;
+      width: 100%; padding: 14px; font-size: 16px; font-weight: bold;
+      background-color: #42b72a; color: white; border: none;
+      border-radius: 8px; cursor: pointer;
     }
-
-    .save-btn:active {
-      opacity: 0.85;
-    }
-
-    /* History & Average Section */
+    .save-btn:active { opacity: 0.85; }
     .average-box {
-      background-color: #3a3b3c;
-      padding: 15px;
-      border-radius: 8px;
-      text-align: center;
-      margin-bottom: 20px;
+      background-color: #3a3b3c; padding: 15px; border-radius: 8px;
+      text-align: center; margin-bottom: 20px;
     }
-
-    .average-label {
-      font-size: 28px;
-      font-weight: bold;
-      color: #42b72a;
-      margin: 5px 0;
-    }
-
-    .history-list {
-      list-style: none;
-      padding: 0;
-      margin: 0;
-    }
-
+    .average-label { font-size: 28px; font-weight: bold; color: #42b72a; margin: 5px 0; }
+    .history-list { list-style: none; padding: 0; margin: 0; }
     .history-item {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: 12px;
-      border-bottom: 1px solid #3a3b3c;
+      display: flex; justify-content: space-between; align-items: center;
+      padding: 12px; border-bottom: 1px solid #3a3b3c;
     }
-
-    .history-item:last-child {
-      border-bottom: none;
-    }
-
-    .item-info {
-      display: flex;
-      flex-direction: column;
-    }
-
-    .item-title {
-      font-weight: bold;
-      font-size: 15px;
-    }
-
-    .item-time {
-      font-size: 12px;
-      color: #b0b3b8;
-    }
-
-    .item-score {
-      font-size: 15px;
-      font-weight: bold;
-      color: #2d88ff;
-      margin-right: 12px;
-    }
-
+    .history-item:last-child { border-bottom: none; }
+    .item-info { display: flex; flex-direction: column; }
+    .item-title { font-weight: bold; font-size: 15px; }
+    .item-time { font-size: 12px; color: #b0b3b8; }
+    .item-score { font-size: 15px; font-weight: bold; color: #2d88ff; margin-right: 12px; }
     .delete-btn {
-      background: #e41e3f;
-      color: white;
-      border: none;
-      border-radius: 6px;
-      padding: 6px 10px;
-      cursor: pointer;
-      font-size: 12px;
+      background: #e41e3f; color: white; border: none; border-radius: 6px;
+      padding: 6px 10px; cursor: pointer; font-size: 12px;
     }
-
     .clear-all-btn {
-      width: 100%;
-      margin-top: 15px;
-      padding: 10px;
-      background-color: transparent;
-      border: 1px solid #e41e3f;
-      color: #e41e3f;
-      border-radius: 8px;
-      cursor: pointer;
+      width: 100%; margin-top: 15px; padding: 10px; background-color: transparent;
+      border: 1px solid #e41e3f; color: #e41e3f; border-radius: 8px; cursor: pointer;
     }
   </style>
 </head>
@@ -199,100 +85,69 @@
   <div class="container">
     <h2>Politics</h2>
 
-    <!-- Top Tabs -->
     <div class="tabs">
       <button id="rateTabBtn" class="tab-btn active" onclick="switchTab('rate')">Rate Answer</button>
       <button id="historyTabBtn" class="tab-btn" onclick="switchTab('history')">History (<span id="countBadge">0</span>)</button>
     </div>
 
-    <!-- TAB 1: Rating Screen -->
     <div id="rateSection" class="card">
       <input type="text" id="noteInput" placeholder="Name or Question (optional)...">
-
       <div class="spectrum-display" id="spectrumDisplay">Center</div>
-
       <input type="range" id="ratingSlider" min="1" max="7" value="4" oninput="updateSlider(this.value)">
-      
       <div class="scale-markers">
         <span>Far Left</span>
         <span>Center</span>
         <span>Far Right</span>
       </div>
-
       <button class="save-btn" onclick="saveRating()">Save Rating</button>
     </div>
 
-    <!-- TAB 2: History & Average Screen -->
     <div id="historySection" class="card hidden">
       <div class="average-box">
         <div style="font-size: 14px; color: #b0b3b8;">Overall Average</div>
         <div class="average-label" id="averageDisplay">-</div>
         <div style="font-size: 12px; color: #b0b3b8;" id="totalCountText">0 responses saved</div>
       </div>
-
       <ul class="history-list" id="historyList"></ul>
-
       <button class="clear-all-btn" onclick="clearAllHistory()">Clear All History</button>
     </div>
   </div>
 
   <script>
-    // Map numbers 1-7 to the political spectrum labels
     const spectrumLabels = {
-      1: "Far Left",
-      2: "Left",
-      3: "Lean Left",
-      4: "Center",
-      5: "Lean Right",
-      6: "Right",
-      7: "Far Right"
+      1: "Far Left", 2: "Left", 3: "Lean Left", 4: "Center",
+      5: "Lean Right", 6: "Right", 7: "Far Right"
     };
 
-    // Load existing history from device storage (using a fresh storage key for this version)
     let ratingsHistory = JSON.parse(localStorage.getItem("politicsSpectrumRatings")) || [];
 
-    // Update label text as you drag the slider
     function updateSlider(val) {
       document.getElementById("spectrumDisplay").innerText = spectrumLabels[val];
     }
 
-    // Save current rating to history
     function saveRating() {
       const score = parseInt(document.getElementById("ratingSlider").value);
       const labelName = spectrumLabels[score];
       const noteText = document.getElementById("noteInput").value.trim();
       const title = noteText !== "" ? noteText : `Response #${ratingsHistory.length + 1}`;
-      
-      const now = new Date();
-      const timeString = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+      const timeString = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
 
-      ratingsHistory.unshift({
-        id: Date.now(),
-        title: title,
-        score: score,
-        label: labelName,
-        time: timeString
-      });
-
+      ratingsHistory.unshift({ id: Date.now(), title, score, label: labelName, time: timeString });
       localStorage.setItem("politicsSpectrumRatings", JSON.stringify(ratingsHistory));
 
-      // Reset inputs back to Center (4) for the next question
       document.getElementById("noteInput").value = "";
       document.getElementById("ratingSlider").value = 4;
       updateSlider(4);
       updateHistoryUI();
 
-      // Quick visual confirmation on the button
       const btn = document.querySelector(".save-btn");
       btn.innerText = "Saved! ✓";
       setTimeout(() => { btn.innerText = "Save Rating"; }, 800);
     }
 
-    // Calculate average and render the history list
     function updateHistoryUI() {
       document.getElementById("countBadge").innerText = ratingsHistory.length;
       document.getElementById("totalCountText").innerText = `${ratingsHistory.length} responses saved`;
-
       const listEl = document.getElementById("historyList");
       listEl.innerHTML = "";
 
@@ -302,18 +157,11 @@
         return;
       }
 
-      // Calculate the numeric average and map to the nearest spectrum label
-      let sum = 0;
-      for (let item of ratingsHistory) {
-        sum += item.score;
-      }
+      let sum = ratingsHistory.reduce((acc, item) => acc + item.score, 0);
       const avgNum = sum / ratingsHistory.length;
-      const roundedScore = Math.round(avgNum);
-      const avgLabel = spectrumLabels[roundedScore];
-
+      const avgLabel = spectrumLabels[Math.round(avgNum)];
       document.getElementById("averageDisplay").innerText = `${avgLabel} (${avgNum.toFixed(1)} / 7)`;
 
-      // Build each row in history
       ratingsHistory.forEach(item => {
         const li = document.createElement("li");
         li.className = "history-item";
@@ -331,14 +179,12 @@
       });
     }
 
-    // Delete a single entry
     function deleteItem(id) {
       ratingsHistory = ratingsHistory.filter(item => item.id !== id);
       localStorage.setItem("politicsSpectrumRatings", JSON.stringify(ratingsHistory));
       updateHistoryUI();
     }
 
-    // Wipe all saved entries
     function clearAllHistory() {
       if (confirm("Are you sure you want to delete all saved ratings?")) {
         ratingsHistory = [];
@@ -347,23 +193,19 @@
       }
     }
 
-    // Switch between Rate tab and History tab
     function switchTab(tab) {
-      if (tab === 'rate') {
-        document.getElementById("rateSection").classList.remove("hidden");
-        document.getElementById("historySection").classList.add("hidden");
-        document.getElementById("rateTabBtn").classList.add("active");
-        document.getElementById("historyTabBtn").classList.remove("active");
-      } else {
-        document.getElementById("rateSection").classList.add("hidden");
-        document.getElementById("historySection").classList.remove("hidden");
-        document.getElementById("rateTabBtn").classList.remove("active");
-        document.getElementById("historyTabBtn").classList.add("active");
-        updateHistoryUI();
-      }
+      document.getElementById("rateSection").classList.toggle("hidden", tab !== 'rate');
+      document.getElementById("historySection").classList.toggle("hidden", tab !== 'history');
+      document.getElementById("rateTabBtn").classList.toggle("active", tab === 'rate');
+      document.getElementById("historyTabBtn").classList.toggle("active", tab === 'history');
+      if (tab === 'history') updateHistoryUI();
     }
 
-    // Initialize UI on load
+    // Register Service Worker for PWA installability
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('./sw.js').catch(() => {});
+    }
+
     updateHistoryUI();
   </script>
 </body>
