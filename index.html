@@ -202,18 +202,9 @@
     }
 
     // Dynamically generate a real 512x512 PNG icon & valid Manifest matching your exact URL
-    (function setupPWA() {
-      const canvas = document.createElement('canvas');
-      canvas.width = 512;
-      canvas.height = 512;
-      const ctx = canvas.getContext('2d');
-      ctx.fillStyle = '#2d88ff';
-      ctx.fillRect(0, 0, 512, 512);
-      ctx.fillStyle = '#ffffff';
-      ctx.font = 'bold 280px sans-serif';
-      ctx.textAlign = 'center';
-      ctx.textBaseline = 'middle';
-      ctx.fillText('P', 256, 270);
+ if ('serviceWorker' in navigator) {
+  navigator.serviceWorker.register('./sw.js');
+}
 
       canvas.toBlob((blob) => {
         const iconUrl = URL.createObjectURL(blob);
